@@ -1,0 +1,45 @@
+name: Build Extension
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # CHANGE if you need a different/newer Blender build to compile against.
+      # Check https://download.blender.org/release/ for current versions.
+      - name: Download Blender
+        run: |
+          wget -q https://download.blender.org/release/Blender4.2/blender-4.2.0-linux-x64.tar.xz
+          tar xf blender-4.2.0-linux-x64.tar.xz
+
+      # Finds the one folder in this repo that has a blender_manifest.toml,
+      # so this workflow doesn't need to be edited when you reuse the
+      # template for a different addon with a different folder name.
+      - name: Detect addon folder
+        id: detect
+        run: |
+          DIR=$(dirname "$(find . -maxdepth 2 -name blender_manifest.toml | head -n1)")
+          echo "addon_dir=$DIR" >> "$GITHUB_OUTPUT"
+
+      - name: Build extension zip
+        run: |
+          ./blender-4.2.0-linux-x64/blender --command extension build \
+            --source-dir "${{ steps.detect.outputs.addon_dir }}" \
+            --output-dir dist
+
+      - name: Generate repository index
+        run: |
+          ./blender-4.2.0-linux-x64/blender --command extension server-generate \
+            --repo-dir dist
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist

@@ -1,0 +1,34 @@
+schema_version = "1.0.0"
+
+# ============================================================
+# CHANGE THESE FOUR for every new plugin you make from this template
+# ============================================================
+
+# Must match this folder's name exactly. Lowercase, underscores only.
+id = "simple_example_addon"
+
+# Bump on every release.
+version = "1.0.0"
+
+# Shown in the Extensions UI.
+name = "Simple Example Addon"
+
+tagline = "One-line description of what this plugin does"
+
+# ============================================================
+# Change once per repo (not per release)
+# ============================================================
+
+maintainer = "Your Name <you@example.com>"
+website = "https://github.com/your-github-username/your-repo-name"
+
+# ============================================================
+# Usually leave as-is
+# ============================================================
+
+type = "add-on"
+tags = ["Object"]
+blender_version_min = "4.2.0"
+license = [
+  "SPDX:GPL-3.0-or-later",
+]
